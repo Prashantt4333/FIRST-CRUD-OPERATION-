@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <title>JS CRUD OPERATION</title>
+        <style>
+            
+        </style>
+    </head>
+    <body class="p-3 ">
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Secrete Super Stars</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="navbar myul">
+                            <li class=""></li>
+                            <li></li>
+                            <li></li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary closemodal" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary " onclick="updateButton(this)">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form class="mt-5 " >
+            <input class="mb-3 " name="name" type="text" placeholder="Firtsname" required="required"/>
+            <input class="mb-3 " name="lastname" type="text" placeholder="Lastname" required="required"/>
+            <input class="mb-3 " name="address" type="text" placeholder="Address" required="required"/>
+            <input class=" btn btn-warning " type="button" value="Save" onclick="save('')" > 
+        </form>
+
+        <div class="MyError">
+
+        </div>
+        <br />
+        <hr class="mt-5">
+        <table class="table" id="myTable">
+            <thead class="">
+                <tr >
+                    <th class="">Name</th>
+                    <th class="">Sirname</th>
+                    <th class="">Address</th>
+                    <th class="">Action</th>
+                </tr>
+            </thead>
+            <tbody class="">
+                
+            </tbody>
+        </table>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script>
+            let curruntEditRow;
+            let n = document.querySelector("input[name='name']")
+            let ln = document.querySelector("input[name='lastname']")
+            let add = document.querySelector("input[name='address']")
+
+            let tbody = document.querySelector("#myTable tbody")
+            let save=()=>{
+                console.log(n.value);
+                console.log(ln.value);
+                console.log(add.value);
+                console.log(tbody)
+                if (n.value !=="" && ln.value !== "" && add.value !=="" ){
+                    tbody.innerHTML +=`<tr>
+                                            <td>${n.value}</td>
+                                            <td>${ln.value}</td>
+                                            <td>${add.value}</td>
+                                            <td> 
+                                                <button class="btn btn-primary  " data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="viewData(this)">View</button>
+                                                <button class="btn btn-success " data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="update(this)">Update</button>
+                                                <button class="btn btn-danger  "  onclick="deleteElenent(this)">Delete</button>
+                                            </td>
+                                        </tr>`; //Appent technique
+                    //.....................
+    
+                    n.value = ln.value = add.value="";
+                }
+                else{
+                   document.querySelector(".MyError").innerHTML = ` <div class="alert alert-danger mt-2 text-center" alert-dismissible" role="alert">
+                                                                       Pleas fill the all fields !
+                                                                       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                                    </div>`;
+                }
+            }
+            let deleteElenent = (D) => {
+                // console.log(D); 
+                // console.log(D.closest('tr'))
+                D.closest('tr').remove()
+            }
+            let mb = document.querySelector("div.modal-body");
+            let viewData = (view) =>{
+                let nme = view.closest('tr').querySelector('td:first-child').innerHTML;
+                let lastnme = view.closest('tr').querySelector('td:nth-child(2)').innerHTML;
+                let addrs = view.closest('tr').querySelector('td:nth-child(3)').innerHTML;
+                document.querySelector("ul.myul > li:first-child").innerHTML = nme;
+                document.querySelector("ul.myul > li:nth-child(2)").innerHTML = lastnme;
+                document.querySelector("ul.myul > li:nth-child(3)").innerHTML = addrs;
+            }
+            let update = (UPDate) =>{
+                curruntEditRow = UPDate.closest("tr");
+                document.querySelector(".modal-title").innerHTML = "Edite SSS Information"
+                let name = UPDate.closest('tr').querySelector('td:first-child').innerHTML;
+                let lastname = UPDate.closest('tr').querySelector('td:nth-child(2)').innerHTML;
+                let addresss = UPDate.closest('tr').querySelector('td:nth-child(3)').innerHTML;
+                
+                mb.innerHTML = `
+                                <form class="mt-5 ms-5 myUpdate" >
+                                    <input class="mb-2" name="name"     value="`+name+`" type="text"  placeholder="Firtsname"/>
+                                    <input class="mb-2" name="lastname" value="`+lastname+`" type="text"  placeholder="Lastname"/>
+                                    <input class="mb-2" name="address"  value="`+addresss+`" type="text"  placeholder="Address"/>
+                                </form>
+                                
+                                `;      
+            }
+
+            let updateButton =(elem) =>{
+                
+                let nm =    elem.closest('div.modal-content').querySelector('form.myUpdate input[name="name"]').value;
+                let sm =    elem.closest('div.modal-content').querySelector('form.myUpdate input[name="lastname"]').value;
+                let adr =    elem.closest('div.modal-content').querySelector('form.myUpdate input[name="address"]').value;
+                console.log(nm);
+                console.log(sm);
+                console.log(adr);
+                
+                curruntEditRow.querySelector('td:first-child').innerHTML = nm ;
+                curruntEditRow.querySelector('td:nth-child(2)').innerHTML = sm ;
+                curruntEditRow.querySelector('td:nth-child(3)').innerHTML = adr ;
+
+                elem.closest("div.modal").querySelector('button.closemodal').click();
+            }
+
+        </script>
+        
+   
+    </body>
+</html>
